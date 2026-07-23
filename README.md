@@ -11,6 +11,7 @@
     <img src="https://img.shields.io/badge/Codex_Pet-v2-7c6cff?style=flat-square" alt="Codex Pet v2" />
     <img src="https://img.shields.io/badge/Windows-supported-4f9ee8?style=flat-square&logo=windows" alt="Windows supported" />
     <img src="https://img.shields.io/badge/macOS-supported-555?style=flat-square&logo=apple" alt="macOS supported" />
+    <a href="https://github.com/Loki-Tricks/zhu-pi-deng/actions/workflows/install-test.yml"><img src="https://github.com/Loki-Tricks/zhu-pi-deng/actions/workflows/install-test.yml/badge.svg" alt="Cross-platform installer test" /></a>
   </p>
 
   <p>
