@@ -69,7 +69,7 @@ curl -fsSL https://raw.githubusercontent.com/Loki-Tricks/zhu-pi-deng/main/instal
 
 <br />
 
-![猪屁登完整动作表](preview.png)
+![猪屁登完整动作表](assets/preview.png)
 
 </details>
 
