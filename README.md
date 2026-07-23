@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/waving.gif" width="192" alt="猪屁登向你挥手" />
+  <img src="assets/waving.webp" width="192" alt="猪屁登向你挥手" />
 
   <h1>猪屁登</h1>
 
@@ -60,7 +60,7 @@ curl -fsSL https://raw.githubusercontent.com/Loki-Tricks/zhu-pi-deng/main/instal
 
 | 安静陪伴 | 认真工作 | 热情招手 |
 | :---: | :---: | :---: |
-| <img src="assets/idle.gif" width="192" alt="猪屁登待机动画" /> | <img src="assets/running.gif" width="192" alt="猪屁登工作动画" /> | <img src="assets/waving.gif" width="192" alt="猪屁登挥手动画" /> |
+| <img src="assets/idle.webp" width="192" alt="猪屁登待机动画" /> | <img src="assets/running.webp" width="192" alt="猪屁登工作动画" /> | <img src="assets/waving.webp" width="192" alt="猪屁登挥手动画" /> |
 
 猪屁登包含完整的 Codex v2 动画状态：待机、左右移动、挥手、跳跃、失败、等待输入、工作中与审阅，以及一整圈 16 向观察动作。
 
