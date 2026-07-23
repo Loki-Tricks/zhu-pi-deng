@@ -1,6 +1,13 @@
 [CmdletBinding()]
 param(
-    [string]$Destination = (Join-Path $env:USERPROFILE ".codex\pets\zhu-pi-deng")
+    [string]$Destination = $(
+        if ($env:ZHU_PI_DENG_DESTINATION) {
+            $env:ZHU_PI_DENG_DESTINATION
+        }
+        else {
+            Join-Path $env:USERPROFILE ".codex\pets\zhu-pi-deng"
+        }
+    )
 )
 
 $ErrorActionPreference = "Stop"

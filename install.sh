@@ -3,8 +3,22 @@ set -euo pipefail
 
 PET_ID="zhu-pi-deng"
 REPO_BASE="https://raw.githubusercontent.com/Loki-Tricks/zhu-pi-deng/main"
-DESTINATION="${HOME}/.codex/pets/${PET_ID}"
+DESTINATION="${ZHU_PI_DENG_DESTINATION:-${HOME}/.codex/pets/${PET_ID}}"
 TEMPORARY="$(mktemp -d "${TMPDIR:-/tmp}/zhu-pi-deng.XXXXXX")"
+
+if [[ "${1:-}" == "--destination" ]]; then
+  if [[ -z "${2:-}" ]]; then
+    echo "错误：--destination 需要一个目录。" >&2
+    exit 2
+  fi
+  DESTINATION="$2"
+  shift 2
+fi
+
+if [[ "$#" -ne 0 ]]; then
+  echo "用法：bash install.sh [--destination 目录]" >&2
+  exit 2
+fi
 
 cleanup() {
   rm -rf -- "${TEMPORARY}"

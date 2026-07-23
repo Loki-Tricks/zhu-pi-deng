@@ -1,0 +1,59 @@
+name: Cross-platform installer test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows installation
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install into an isolated directory
+        shell: pwsh
+        run: |
+          $destination = Join-Path $env:RUNNER_TEMP "zhu-pi-deng"
+          ./install.ps1 -Destination $destination
+
+          $manifestPath = Join-Path $destination "pet.json"
+          $sheetPath = Join-Path $destination "spritesheet.webp"
+          if (-not (Test-Path -LiteralPath $manifestPath) -or -not (Test-Path -LiteralPath $sheetPath)) {
+            throw "Required installed files are missing."
+          }
+
+          $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($manifest.id -ne "zhu-pi-deng" -or [int]$manifest.spriteVersionNumber -ne 2) {
+            throw "Installed pet manifest is invalid."
+          }
+
+          $sourceHash = (Get-FileHash -LiteralPath ./spritesheet.webp -Algorithm SHA256).Hash
+          $installedHash = (Get-FileHash -LiteralPath $sheetPath -Algorithm SHA256).Hash
+          if ($sourceHash -ne $installedHash) {
+            throw "Installed spritesheet does not match the release asset."
+          }
+
+  macos:
+    name: macOS installation
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install into an isolated directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          destination="${RUNNER_TEMP}/zhu-pi-deng"
+          bash ./install.sh --destination "${destination}"
+
+          test -f "${destination}/pet.json"
+          test -f "${destination}/spritesheet.webp"
+          test "$(jq -r '.id' "${destination}/pet.json")" = "zhu-pi-deng"
+          test "$(jq -r '.spriteVersionNumber' "${destination}/pet.json")" = "2"
+          cmp --silent ./spritesheet.webp "${destination}/spritesheet.webp"
