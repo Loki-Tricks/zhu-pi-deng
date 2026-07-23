@@ -14,7 +14,7 @@ jobs:
     name: Windows installation
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install into an isolated directory
         shell: pwsh
@@ -39,11 +39,27 @@ jobs:
             throw "Installed spritesheet does not match the release asset."
           }
 
+      - name: Test the published one-line installer
+        if: github.event_name != 'pull_request'
+        shell: pwsh
+        run: |
+          $env:ZHU_PI_DENG_DESTINATION = Join-Path $env:RUNNER_TEMP "published-zhu-pi-deng"
+          $script = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/Loki-Tricks/zhu-pi-deng/main/install.ps1"
+          Invoke-Expression $script
+
+          $manifest = Get-Content -LiteralPath (Join-Path $env:ZHU_PI_DENG_DESTINATION "pet.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($manifest.id -ne "zhu-pi-deng" -or [int]$manifest.spriteVersionNumber -ne 2) {
+            throw "Published Windows installer produced an invalid pet."
+          }
+          if ((Get-FileHash ./spritesheet.webp).Hash -ne (Get-FileHash (Join-Path $env:ZHU_PI_DENG_DESTINATION "spritesheet.webp")).Hash) {
+            throw "Published Windows installer produced a different spritesheet."
+          }
+
   macos:
     name: macOS installation
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install into an isolated directory
         shell: bash
@@ -57,3 +73,15 @@ jobs:
           test "$(jq -r '.id' "${destination}/pet.json")" = "zhu-pi-deng"
           test "$(jq -r '.spriteVersionNumber' "${destination}/pet.json")" = "2"
           cmp --silent ./spritesheet.webp "${destination}/spritesheet.webp"
+
+      - name: Test the published one-line installer
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          export ZHU_PI_DENG_DESTINATION="${RUNNER_TEMP}/published-zhu-pi-deng"
+          curl -fsSL --retry 3 https://raw.githubusercontent.com/Loki-Tricks/zhu-pi-deng/main/install.sh | bash
+
+          test "$(jq -r '.id' "${ZHU_PI_DENG_DESTINATION}/pet.json")" = "zhu-pi-deng"
+          test "$(jq -r '.spriteVersionNumber' "${ZHU_PI_DENG_DESTINATION}/pet.json")" = "2"
+          cmp --silent ./spritesheet.webp "${ZHU_PI_DENG_DESTINATION}/spritesheet.webp"
